@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaPlus, FaTrash } from "react-icons/fa";
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import InvoicePDF from '../components/InvoicePDF';
 
 const Index = () => {
