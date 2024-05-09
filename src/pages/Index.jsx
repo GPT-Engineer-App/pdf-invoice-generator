@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { jsPDF } from 'jspdf';
+
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 const Index = () => {
@@ -30,19 +30,7 @@ const Index = () => {
   };
 
   const downloadPDF = () => {
-    const doc = new jsPDF();
-    doc.text('Invoice Details', 10, 10);
-    doc.text(`Sender's Address: ${senderAddress}`, 10, 20);
-    doc.text(`Recipient's Address: ${recipientAddress}`, 10, 30);
-    doc.text(`Invoice Number: ${invoiceNumber}`, 10, 40);
-    doc.text(`Date: ${invoiceDate}`, 10, 50);
-    lineItems.forEach((item, index) => {
-      const position = 60 + (index * 10);
-      doc.text(`Item ${index + 1}: ${item.description}, Quantity: ${item.quantity}, Price: $${item.price}`, 10, position);
-    });
-    const subtotal = calculateSubtotal().toFixed(2);
-    doc.text(`Subtotal: $${subtotal}`, 10, 60 + (lineItems.length * 10));
-    doc.save('invoice.pdf');
+    window.print();
   };
 
   return (
