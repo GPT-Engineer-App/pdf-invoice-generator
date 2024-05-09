@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 const Index = () => {
@@ -7,6 +7,7 @@ const Index = () => {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [invoiceDate, setInvoiceDate] = useState('');
+  const invoiceRef = useRef(null);
 
   const handleLineItemChange = (index, field, value) => {
     const newLineItems = [...lineItems];
@@ -28,8 +29,20 @@ const Index = () => {
     return lineItems.reduce((total, item) => total + (item.quantity * item.price), 0);
   };
 
+  const handleDownloadPdf = async () => {
+    const data = invoiceRef.current.innerHTML;
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `invoice-${invoiceNumber}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div ref={invoiceRef} className="p-8 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-4">Invoice Details</h1>
       <div>
         <label className="block mb-2">Sender's Address:</label>
@@ -56,6 +69,7 @@ const Index = () => {
       <div className="mt-4">
         <h3 className="text-xl font-bold">Subtotal: ${calculateSubtotal().toFixed(2)}</h3>
       </div>
+      <button onClick={handleDownloadPdf} className="p-2 bg-green-500 text-white mt-2">Download PDF</button>
     </div>
   );
 };
