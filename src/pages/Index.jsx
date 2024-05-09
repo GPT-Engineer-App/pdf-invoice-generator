@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { jsPDF } from 'jspdf';
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 const Index = () => {
@@ -28,6 +29,22 @@ const Index = () => {
     return lineItems.reduce((total, item) => total + (item.quantity * item.price), 0);
   };
 
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Invoice Details', 10, 10);
+    doc.text(`Sender's Address: ${senderAddress}`, 10, 20);
+    doc.text(`Recipient's Address: ${recipientAddress}`, 10, 30);
+    doc.text(`Invoice Number: ${invoiceNumber}`, 10, 40);
+    doc.text(`Date: ${invoiceDate}`, 10, 50);
+    lineItems.forEach((item, index) => {
+      const position = 60 + (index * 10);
+      doc.text(`Item ${index + 1}: ${item.description}, Quantity: ${item.quantity}, Price: $${item.price}`, 10, position);
+    });
+    const subtotal = calculateSubtotal().toFixed(2);
+    doc.text(`Subtotal: $${subtotal}`, 10, 60 + (lineItems.length * 10));
+    doc.save('invoice.pdf');
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">Invoice Details</h1>
@@ -52,6 +69,7 @@ const Index = () => {
           </div>
         ))}
         <button onClick={handleAddLineItem} className="p-2 bg-blue-500 text-white"><FaPlus /> Add Item</button>
+        <button onClick={downloadPDF} className="mt-4 p-2 bg-green-500 text-white">Download PDF</button>
       </div>
       <div className="mt-4">
         <h3 className="text-xl font-bold">Subtotal: ${calculateSubtotal().toFixed(2)}</h3>
